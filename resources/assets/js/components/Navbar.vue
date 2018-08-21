@@ -20,6 +20,11 @@
         <ul class="navbar-nav ml-auto">
           <!-- Authenticated -->
           <li v-if="user" class="nav-item">
+              <router-link :to="{ name: 'search' }" class="nav-link" active-class="active">
+                <fa icon="search" fixed-width/> {{ $t('search') }}
+              </router-link>
+          </li>
+          <li v-if="user" class="nav-item">
               <router-link :to="{ name: 'friends' }" class="nav-link" active-class="active">
                 <fa icon="users" fixed-width/> {{ $t('friends') }}
               </router-link>

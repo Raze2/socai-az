@@ -6,6 +6,7 @@ const PasswordReset = () => import('~/pages/auth/password/reset').then(m => m.de
 const Friends = () => import('~/pages/friends').then(m => m.default || m)
 const RequestsRecived = () => import('~/pages/requestsrecived').then(m => m.default || m)
 const FriendsProfile = () => import('~/pages/friendprofile').then(m => m.default || m)
+const Search = () => import('~/pages/search').then(m => m.default || m)
 const NotFound = () => import('~/pages/errors/404').then(m => m.default || m)
 
 const Home = () => import('~/pages/home').then(m => m.default || m)
@@ -24,6 +25,7 @@ export default [
   { path: '/friends', name: 'friends', component: Friends },
   { path: '/friends/requestsrecived', name: 'requests.recived', component: RequestsRecived },
   { path: '/profile/:id', name: 'friend.profile', component: FriendsProfile },
+  { path: '/search', name: 'search', component: Search },
 
   { path: '/home', name: 'home', component: Home },
   { path: '/settings',

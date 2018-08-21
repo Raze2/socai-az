@@ -4,6 +4,12 @@ import router from '~/router'
 import i18n from '~/plugins/i18n'
 import App from '~/components/App'
 
+
+window.Vue = require('vue');
+
+import InstantSearch from 'vue-instantsearch'
+Vue.use(InstantSearch);
+
 import '~/plugins'
 import '~/components'
 
@@ -14,5 +20,6 @@ new Vue({
   i18n,
   store,
   router,
+  InstantSearch,
   ...App
 })
