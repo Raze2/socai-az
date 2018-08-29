@@ -20,6 +20,5 @@ new Vue({
   i18n,
   store,
   router,
-  InstantSearch,
   ...App
 })

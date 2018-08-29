@@ -8,10 +8,10 @@
       <!-- <small>Front-end designer</small> -->
     </h4>
     <div class="card-links" v-if="show">
-      <button class="btn btn-sm btn-primary mr-1" v-if="friend.friend == 'recived'" @click="acceptRequest()"><fa icon="check" fixed-width/> Accept</button>
-      <button class="btn btn-sm btn-primary mr-1" v-if="friend.friend == false" @click="sendRequest()"><fa icon="user-plus" fixed-width/> Add</button>
-      <button class="btn btn-sm btn-primary mr-1" disabled v-if="friend.friend == 'sended'"><fa icon="user-plus" fixed-width/> Request sended</button>
-      <button class="btn btn-sm btn-danger" v-if="friend.friend != false" @click="deleteRequest()"><fa icon="times" fixed-width/> Delete</button>
+      <button class="btn btn-sm btn-primary mr-1" v-if="friend.friend === 1" @click="acceptRequest()"><fa icon="check" fixed-width/> Accept</button>
+      <button class="btn btn-sm btn-primary mr-1" v-if="friend.friend === 0" @click="sendRequest()"><fa icon="user-plus" fixed-width/> Add</button>
+      <button class="btn btn-sm btn-primary mr-1" disabled v-if="friend.friend === 2"><fa icon="user-plus" fixed-width/> Request sended</button>
+      <button class="btn btn-sm btn-danger" v-if="friend.friend !== 0" @click="deleteRequest()"><fa icon="times" fixed-width/> Delete</button>
     </div>
   </div>
 </div>
@@ -41,13 +41,13 @@ export default {
     getRequests: function(e) {
       axios.get('/api/friends/'+ this.$route.params.id).then((res) =>{
         this.friend = res.data 
-        console.log(res)
+        console.log(res.data)
       })
     },
     sendRequest: function(e) {
       axios.post('/api/friends/'+ this.$route.params.id, []).then((res) =>{
         if(res){
-          this.friend.friend = 'sended' 
+          this.friend.friend = 2
         }
       })
     },
@@ -63,7 +63,7 @@ export default {
       }).then((result) => {
         if (result.value) {
             axios.delete('/api/friends/profile/'+this.$route.params.id).then((res) =>{
-            this.friend.friend = false 
+            this.friend.friend = 0 
             if(res) {
               swal(
                 'Deleted!',

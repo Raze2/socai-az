@@ -73,7 +73,14 @@ class FriendsController extends Controller
         $friend = User::findOrFail($id);
         $isFriend = ($user->requestSend->where('confirmed', 1)->find($id) OR $user->friendRequest->where('confirmed', 1)->find($id) ? 'friend' : ($user->requestSend->where('confirmed', 0)->find($id) ? 'sended' : ($user->friendRequest->where('confirmed', 0)->find($id) ? 'recived' : False)));
 
+        // $isFriend = ($user->requestSend->find($id)->pivot->confirmed == 1) OR ($user->friendRequest->find($id)->pivot->confirmed == 1) ? 3 : ($user->requestSend->find($id)->pivot->confirmed == 0) ? 2 : ($user->friendRequest->find($id)->pivot->confirmed == 0) ? 1 : 0;
+
+
+
         return ['name' => $friend->name,'photo_url' => $friend->photo_url, 'friend' => $isFriend];
+
+        // return $user->requestSend->find($friend->id)->pivot->id;
+        // return $user->friendRequest->find($friend->id);
     }
     /**
      * Update the specified resource in storage.
