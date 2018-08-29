@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import axios from 'axios'
 import swal from 'sweetalert2'
 
@@ -36,6 +35,7 @@ export default {
     getRequests: function(e) {
       axios.get('/api/friends').then((res) =>{
         this.friends = res.data 
+        console.log(res)
       })
     },
     deleteRequest: function(friend) {

@@ -20,15 +20,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         return $request->user();
     });
 
-    Route::get('friends', 'FriendsController@friends');
-    Route::get('friends/friendrequests', 'FriendsController@requestsSend');
-    Route::get('friends/requestsrecived', 'FriendsController@requestsRecived');
-    Route::get('friends/{id}', 'FriendsController@profile');
-    Route::post('friends/{id}', 'FriendsController@sendRequest');
-    Route::put('friends/{id}', 'FriendsController@userAccepted');
-    Route::put('friends/profile/{id}', 'FriendsController@profileUserAccepted');
-    Route::delete('friends/{id}', 'FriendsController@destroy');
-    Route::delete('friends/profile/{id}', 'FriendsController@profileDestroy');
+    Route::get('friends', 'FriendshipController@friends');
+    Route::get('friends/friendrequests', 'FriendshipController@requestsSend');
+    Route::get('friends/requestsrecived', 'FriendshipController@requestsRecived');
+    Route::get('friends/{id}', 'FriendshipController@profile');
+    Route::post('friends/{id}', 'FriendshipController@sendRequest');
+    Route::put('friends/{id}', 'FriendshipController@userAccepted');
+    Route::put('friends/profile/{id}', 'FriendshipController@profileUserAccepted');
+    Route::delete('friends/{id}', 'FriendshipController@destroy');
+    Route::delete('friends/profile/{id}', 'FriendshipController@profileDestroy');
 
     Route::patch('settings/profile', 'Settings\ProfileController@update');
     Route::patch('settings/password', 'Settings\PasswordController@update');

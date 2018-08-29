@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Friendship;
 use Illuminate\Http\Request;
+use App\User;
+use Auth;
 
 class FriendshipController extends Controller
 {
@@ -12,9 +14,10 @@ class FriendshipController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function friends()
     {
-        //
+        $user = Auth::user();
+        return $user->friends->toJson();
     }
 
     /**
