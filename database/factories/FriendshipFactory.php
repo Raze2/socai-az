@@ -3,11 +3,11 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\Friendship::class, function (Faker $faker) {
-	$user = factory('App\User')->create()->id;
+	$user = $faker->numberBetween(1,800);
     return [
         'first_user' => $user,
-        'second_user' => $user,
-        'acted_user' => factory('App\User')->create()->id,
+        'second_user' => $faker->numberBetween(1,800),
+        'acted_user' => $user,
         'status' => 'confirmed'
     ];
 });

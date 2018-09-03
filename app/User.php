@@ -99,12 +99,52 @@ class User extends Authenticatable implements JWTSubject
     //     return $con1->merge($con2);
     // }
 
+    // All friendship that this user has started
+    public function allFriendsOfThisUser()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'first_user', 'second_user')
+        ->withPivot('status','acted_user','id');      
+    }
+ 
+    // All friendship that this user is asked for
+    public function allThisUserFriendOf()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'second_user', 'first_user')
+        ->withPivot('status','acted_user', 'id');
+    }
 
-        // friendship that this user started
+     // accessor allowing you call $user->friends
+    public function getAllFriendsAttribute()
+    {
+        if ( ! array_key_exists('friends', $this->relations)) $this->loadAllFriends();
+        return $this->getRelation('all_friends');
+    }
+ 
+    protected function loadAllFriends()
+    {
+        if ( ! array_key_exists('all_friends', $this->relations))
+        {
+        $friends = $this->mergeAllFriends();
+        $this->setRelation('all_friends', $friends);
+        }
+    }
+ 
+    protected function mergeAllFriends()
+    {
+        if($temp = $this->allFriendsOfThisUser)
+        return $temp->merge($this->allThisUserFriendOf);
+        else
+        return $this->allThisUserFriendOf;
+    }
+
+
+
+
+    // friendship that this user started
     protected function friendsOfThisUser()
     {
         return $this->belongsToMany(User::class, 'friendships', 'first_user', 'second_user')
-        ->withPivot('status')
+        ->withPivot('status','acted_user')
         ->wherePivot('status', 'confirmed');
     }
  
@@ -112,7 +152,7 @@ class User extends Authenticatable implements JWTSubject
     protected function thisUserFriendOf()
     {
         return $this->belongsToMany(User::class, 'friendships', 'second_user', 'first_user')
-        ->withPivot('status')
+        ->withPivot('status','acted_user')
         ->wherePivot('status', 'confirmed');
     }
  
@@ -129,7 +169,7 @@ class User extends Authenticatable implements JWTSubject
         {
         $friends = $this->mergeFriends();
         $this->setRelation('friends', $friends);
-    }
+        }
     }
  
     protected function mergeFriends()
@@ -139,6 +179,8 @@ class User extends Authenticatable implements JWTSubject
         else
         return $this->thisUserFriendOf;
     }
+
+
 
     public function friend_requests()
     {
@@ -152,7 +194,9 @@ class User extends Authenticatable implements JWTSubject
         ->where('status', 'pending');
     }
 
-        // friendship that this user started but now blocked
+    
+
+    // friendship that this user started but now blocked
     protected function friendsOfThisUserBlocked()
     {
         return $this->belongsToMany(User::class, 'friendships', 'first_user', 'second_user')
@@ -192,6 +236,15 @@ class User extends Authenticatable implements JWTSubject
             return $temp->merge($this->thisUserFriendOfBlocked);
         else
             return $this->thisUserFriendOfBlocked;
+    }
+
+
+    /**
+     * Get the post for this user.
+     */
+    public function posts()
+    {
+        return $this->hasMany('App\Post');
     }
 
 }

@@ -4,6 +4,10 @@ import Meta from 'vue-meta'
 import routes from './routes'
 import Router from 'vue-router'
 import { sync } from 'vuex-router-sync'
+import VueFlashMessage from 'vue-flash-message';
+
+
+Vue.use(VueFlashMessage)
 
 Vue.use(Meta)
 Vue.use(Router)

@@ -24,11 +24,13 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('friends/friendrequests', 'FriendshipController@requestsSend');
     Route::get('friends/requestsrecived', 'FriendshipController@requestsRecived');
     Route::get('friends/{id}', 'FriendshipController@profile');
-    Route::post('friends/{id}', 'FriendshipController@sendRequest');
-    Route::put('friends/{id}', 'FriendshipController@userAccepted');
-    Route::put('friends/profile/{id}', 'FriendshipController@profileUserAccepted');
+    Route::post('friends/{id}', 'FriendshipController@sentRequest');
+    Route::put('friends/{id}', 'FriendshipController@userAccept');
     Route::delete('friends/{id}', 'FriendshipController@destroy');
-    Route::delete('friends/profile/{id}', 'FriendshipController@profileDestroy');
+
+    Route::get('posts', 'PostController@index');
+    Route::get('posts/{id}', 'PostController@profilePosts');
+    Route::post('post', 'PostController@store');
 
     Route::patch('settings/profile', 'Settings\ProfileController@update');
     Route::patch('settings/password', 'Settings\PasswordController@update');

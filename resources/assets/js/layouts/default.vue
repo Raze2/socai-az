@@ -1,8 +1,9 @@
 <template>
   <div class="main-layout">
     <navbar/>
-
+    
     <div class="container mt-4">
+      <flash-message></flash-message>
       <child/>
     </div>
   </div>

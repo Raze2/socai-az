@@ -5,10 +5,10 @@ import i18n from '~/plugins/i18n'
 import App from '~/components/App'
 
 
-window.Vue = require('vue');
+// window.Vue = require('vue');
 
-import InstantSearch from 'vue-instantsearch'
-Vue.use(InstantSearch);
+// import InstantSearch from 'vue-instantsearch'
+// Vue.use(InstantSearch);
 
 import '~/plugins'
 import '~/components'
@@ -22,3 +22,6 @@ new Vue({
   router,
   ...App
 })
+
+
+require('vue-flash-message/dist/vue-flash-message.min.css');

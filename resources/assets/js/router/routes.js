@@ -37,5 +37,5 @@ export default [
       { path: 'requestssend', name: 'settings.requests.send', component: SettingsRequestsSend }
     ] },
 
-  { path: '*', component: NotFound }
+  { path: '*', name: 'notfound', component: NotFound }
 ]
