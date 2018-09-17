@@ -4,6 +4,13 @@
   <img class="card-img-top" src="https://unsplash.it/340/160?image=354"/>
   <div class="card-block">
     <img class="card-img-profile" :src="friend.photo_url"/>
+    <div class="dropdown float-right" v-if="show" style="position: absolute;top: 180px;right: 10px;">
+      <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" >
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" @click="blockUser()">Block</a>
+      </div>
+   </div>
     <h4 class="card-title">
       {{ friend.name }}
       <!-- <small>Front-end designer</small> -->
@@ -20,6 +27,14 @@
 <div class="tweetEntry-tweetHolder mt-3">
  <!-- Template Entry -->
  <div class="tweetEntry" v-for="post in posts">
+  <div v-if="post.user_id == user.id" class="dropdown float-right">
+      <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" @click="initUpdate(post)">Edit</a>
+        <a class="dropdown-item" @click="deletePost(post)">Delete</a>
+      </div>
+   </div>
    <div class="tweetEntry-content">
      
      <router-link :to="{ name: 'friend.profile' ,params: { id: post.user.id } }" tag="a" class="tweetEntry-account-group">
@@ -51,8 +66,18 @@
    
    <!-- <div class="optionalMedia" style="[displayMedia]">
      <img class="optionalMedia-img" src="[tweetImageLinkSource]">
+   </div> -->
+
+   <div class="tweetEntry-action-list" style="line-height:24px;color: #b1bbc3;">
+      <p>{{ post.likes.length }} people likes this</p>
    </div>
-   
+   <div class="tweetEntry-action-list" v-if="friend.friendship.status == 'confirmed'" style="line-height:24px;color: #b1bbc3;">
+     <fa icon="thumbs-up" v-if="!post.auth_liked" fixed-width @click="addLike(post)" style="width: 80px;"/>
+     <fa icon="thumbs-up" v-else fixed-width @click="addLike(post)" style="width: 80px;color: red;"/>
+     <fa icon="reply" fixed-width style="width: 80px;"/>
+   </div>
+
+   <!--
    <div class="tweetEntry-action-list" style="line-height:24px;color: #b1bbc3;">
      <i class="fa fa-reply" style="width: 80px;"></i>
      <i class="fa fa-retweet" style="width: 80px"></i>
@@ -63,12 +88,39 @@
    
  <!--End of tweetHolder-->
    </div>
+
+   <b-modal ref="myModalRef" hide-footer title="Edit Post">
+      <form class="form-control" @submit.prevent="updatePost" @keydown="updateform.onKeydown($event)">
+        <div class="form-group">
+         <textarea class="form-control" v-model="updateform.body" :class="{ 'is-invalid': updateform.errors.has('body') }" rows="3"></textarea>
+         <has-error :form="updateform" field="body"/>
+       </div>
+         <div class="form-row align-items-center">
+          <label class="mr-sm-2 col-auto" for="inlineFormCustomSelect">Privacy</label>
+         <div class="col-auto my-1">
+           <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" v-model="updateform.privacy" name="privacy">
+             <option>public</option>
+             <option>friends</option>
+             <option>private</option>
+           </select>
+         </div>
+         <div class="col-auto my-1">
+           <v-button :loading="updateform.busy">
+                    Edit
+           </v-button>
+           <button type="button" class="btn btn-default" data-dismiss="modal" block @click="$refs.myModalRef.hide()">Close</button>
+         </div>
+       </div>
+       </form>
+    </b-modal>
+
 </div>
 
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import Form from 'vform'
 import axios from 'axios'
 import swal from 'sweetalert2'
 
@@ -79,27 +131,76 @@ export default {
     return { title: this.$t('settings') }
   },
 
-  data() {
-    return {
+  data: () => ({
       friend: {
         friendship: []
       },
       posts: [],
+      updateform: new Form({
+        body: '',
+        privacy: ''
+      }),
       show: true
-    } 
-  },
+  }),
 
   methods: {
-    getData: function(e) {
-      axios.get('/api/friends/'+ this.$route.params.id).then((res) =>{
-        this.friend = res.data 
-        this.getPosts()
-      })
+    async getData() {
+      try {
+        await axios.get('/api/friends/'+ this.$route.params.id).then((res) =>{
+          this.friend = res.data 
+        });
+      } catch (error) {
+        this.$router.push({name :'notfound'});
+      }
     },
     getPosts: function(e) {
       axios.get('/api/posts/' + this.$route.params.id).then((res) =>{
         this.posts = res.data,
         console.log(res)
+      })
+    },
+    initUpdate(post)
+    {
+        this.$refs.myModalRef.show();
+        this.updateform.body = post.body;
+        this.updateform.privacy = post.privacy;
+        this.updateform.id = post.id;
+        this.updateform.index = this.posts.indexOf(post);
+    },
+    async updatePost()
+    {   
+        // Submit the form.
+        this.updateform.patch('/api/post/' + this.updateform.id).then(({ data }) => {
+          this.$set(this.posts, this.updateform.index, data);
+          this.$refs.myModalRef.hide();
+          this.flash('Post Edited', 'success',{
+            timeout: 3000,
+          });
+         });
+    },
+    deletePost: function(post) {
+      swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {
+            axios.delete('/api/post/'+ post.id).then((res) =>{
+            let index = this.posts.indexOf(post)
+            this.posts.splice(index, 1)
+            if(res) {
+              swal(
+                'Deleted!',
+                'Your request has been deleted.',
+                'success'
+              )
+            }
+          })
+        }
       })
     },
     sendRequest: function(e) {
@@ -146,7 +247,42 @@ export default {
       if (this.user.id == this.$route.params.id) {
         this.show = false
       } 
-    }
+    },
+    blockUser: function() {
+      swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes!'
+      }).then((result) => {
+        if (result.value) {
+            axios.patch('/api/friends/'+this.$route.params.id).then((res) =>{
+            this.friend.friendship = false;
+            // this.$router.push({name :'home'});
+            if(res) {
+              this.flash('User has been blocked', 'success',{
+                timeout: 3000,
+              });
+            }
+          })
+        }
+      })
+    },
+    addLike: function(post) {
+      // axios.get('/api/posts/like/'+ post.id).then((res) =>{
+      //   let index = this.posts.indexOf(post);
+      //   if(res.data){
+      //     this.posts[index].likes.unshift(res.data)
+      //   } else {
+      //     let likeIndex = this.posts[index].likes.indexOf(res.data)
+      //     this.posts[index].likes.splice(likeIndex, 1) 
+      //   }
+      //   this.posts[index].auth_liked = !this.posts[index].auth_liked;
+      // })
+    } 
   },
 
   computed: mapGetters({
@@ -155,6 +291,7 @@ export default {
 
   created() {
     this.getData()
+    this.getPosts()
     this.checkUser()
   }
 }
@@ -223,6 +360,14 @@ body {
 }
 .card-profile .card-links .fa.fa-facebook:hover {
   color: #2d4474;
+}
+.card-profile .dropdown-menu {
+  left: -60px !important;
+  min-width: 1rem;
+}
+
+.card-profile .dropdown-menu .dropdown-item {
+  cursor: pointer;
 }
 
 

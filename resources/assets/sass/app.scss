@@ -1,6 +1,8 @@
 @import 'variables';
 @import '~bootstrap/scss/bootstrap';
 @import '~sweetalert2/src/sweetalert2';
+@import '~bootstrap/dist/css/bootstrap.css';
+@import '~bootstrap-vue/dist/bootstrap-vue.css';
 
 @import 'elements/card';
 @import 'elements/navbar';
@@ -18,6 +20,15 @@
   border-radius: 5px;
 }
 
+.tweetEntry-tweetHolder .dropdown-menu {
+	left: -60px !important;
+	min-width: 1rem;
+}
+
+.tweetEntry-tweetHolder .dropdown-menu .dropdown-item {
+	cursor: pointer;
+}
+
 /* The action list is optional. */
 .tweetEntry-action-list {
   display: block;
@@ -26,15 +37,18 @@
   margin-top: 10px;
   color: #292f33;
 }
+
+.fa-reply, .fa-thumbs-up {
+  cursor: pointer;
+}
+
 .fa-reply:hover {
   color: #292f33;
 }
-.fa-retweet:hover {
+.fa-thumbs-up:hover {
   color: #5cd65c;
 }
-.fa-heart:hover {
-  color: #ff3333;
-}
+
 /************************/
 
 .tweetEntry {

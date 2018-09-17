@@ -38,7 +38,13 @@
 
 
             <div class="dropdown-menu">
+
+              <router-link :to="{ name: 'friend.profile', params: { id: user.id } }" class="dropdown-item pl-3">
+                <fa icon="user" fixed-width/>
+                {{ $t('profile') }}
+              </router-link>
               
+              <div class="dropdown-divider"/>
               <router-link :to="{ name: 'requests.recived' }" class="dropdown-item pl-3">
                 <fa icon="user-plus" fixed-width/>
                 {{ $t('requestsrecived') }}

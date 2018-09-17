@@ -41,6 +41,17 @@ class FriendshipController extends Controller
         $user = Auth::user();
         return $user->allThisUserFriendOf()->wherePivot('status', 'pending')->get()->toJson();
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function blockedUsers()
+    {
+        $user = Auth::user();
+        return $user->all_friends->where('pivot.status', 'blocked')->where('pivot.acted_user', $user->id)->toJson();
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -50,13 +61,12 @@ class FriendshipController extends Controller
     public function sentRequest($id)
     {
         $user = Auth::user();
-        $friendship = new Friendship;
-        $friendship->first_user = $user->id;
-        $friendship->acted_user = $user->id;
-        $friendship->second_user = $id;
-        $friendship->status = 'pending';
-        $friendship->save();
 
+        if($user->all_friends->find($id)){
+            return response([], 500);
+        }
+
+        $user->addFriend($id, 'pending');
 
         return response([], 204);    
     }
@@ -76,7 +86,7 @@ class FriendshipController extends Controller
             $isFriend = $user->all_friends->find($id)->pivot;
             return ['name' => $friend->name,'photo_url' => $friend->photo_url, 'friendship' => $isFriend];
         } elseif ($user->all_friends->find($id)) {
-             return response([], 500);
+             return response([], 403);
         } else {
             $isFriend = False;
             return ['name' => $friend->name,'photo_url' => $friend->photo_url, 'friendship' => $isFriend];
@@ -130,6 +140,30 @@ class FriendshipController extends Controller
     //     return response([], 204);   
     // }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Friend  $friend
+     * @return \Illuminate\Http\Response
+     */
+
+    public function userBlock($id) {
+        $user = Auth::user();
+
+        $friendship = $user->all_friends->find($id);
+
+        if($friendship){
+            $friend = Friendship::findOrFail($friendship->pivot->id);
+            $friend->status = 'blocked';
+            $friend->acted_user = $user->id;
+            $friend->save();
+        } else {
+            $user->addFriend($id, 'blocked');
+        }
+
+        return response([],204);
+    }
 
     /**
      * Remove the specified resource from storage.

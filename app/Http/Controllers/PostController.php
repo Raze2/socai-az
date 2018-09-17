@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Post;
 use Illuminate\Http\Request;
 use App\User;
+use App\Like;
 use Auth;
 
 class PostController extends Controller
@@ -35,7 +36,7 @@ class PostController extends Controller
         // })->orWhere('user_id', $id)->with('user')->latest()->get();
 
         $userIds = $user->friends->pluck('id')->toArray();
-        $posts = Post::whereIn('user_id', $userIds)->whereIn('privacy', ['public','friends'])->orWhere('user_id', $user->id)->with('user')->latest()->get(); 
+        $posts = Post::whereIn('user_id', $userIds)->whereIn('privacy', ['public','friends'])->orWhere('user_id', $user->id)->with('user','likes')->latest()->get(); 
 
         // $posts = array();
         // foreach ($user->friends as $friend) {
@@ -48,17 +49,22 @@ class PostController extends Controller
 
     public function profilePosts($id)
     {
-        $user = Auth::user();
-        $isFriend = $user->friends->find($id);
+        $user = User::find(1);        
 
-        if($isFriend) {
-            $Friend = $user->friends->whereIn('status', ['pending', 'confirmed'])->findOrFail($id);
-            $posts = Post::where('user_id', $id)->whereIn('privacy', ['public','friends'])->with('user')->latest()->get();
-        } elseif ($user->id == $id) {
-            $posts = Post::where('user_id', $id)->whereIn('privacy', ['public','friends','private'])->with('user')->latest()->get();
+        if($user->all_friends->find($id)){
+            if($user->friends->find($id)) {
+                $posts = Post::where('user_id', $id)->whereIn('privacy', ['public','friends'])->with('user')->latest()->get();
+            } elseif ($user->all_friends->where('pivot.status', 'blocked')->find($id)) {
+                $posts = response([],500);
+            } 
         } else {
-            $posts = Post::where('user_id', $id)->where('privacy', 'public')->with('user')->latest()->get();
+             if ($user->id == $id) {
+                $posts = Post::where('user_id', $id)->whereIn('privacy', ['public','friends','private'])->with('user')->latest()->get();
+            } else {
+                $posts = Post::where('user_id', $id)->where('privacy', 'public')->with('user')->latest()->get();
+            }
         }
+        
 
         return $posts;
     }
@@ -77,11 +83,13 @@ class PostController extends Controller
             'privacy' => 'required',
         ]);
 
-        $post = new Post;
-        $post->body = $request->body;
-        $post->privacy = $request->privacy;
-        $post->user_id = Auth::id();
-        $post->save();
+        $post = Auth::user()->addPost($request);
+
+        // $post = new Post;
+        // $post->body = $request->body;
+        // $post->privacy = $request->privacy;
+        // $post->user_id = Auth::id();
+        // $post->save();
         $post->user = Auth::user();
 
         return $post;
@@ -93,9 +101,23 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function addLike($id)
     {
-        //
+        $user = Auth::user();
+        $userIds = $user->friends->pluck('id')->toArray();
+        $posts = Post::whereIn('user_id', $userIds)->whereIn('privacy', ['public','friends'])->orWhere('user_id', $user->id)->get();
+        $post = $posts->find($id);
+
+        if($post){
+            if($like = Like::where('user_id', $user->id)->where('post_id', $post->id)->first()) {
+                $like->delete();
+                return response([],204);
+            } else {
+                $like = $post->addLike();
+                return $like;
+            }
+        }        
+
     }
 
     /**
@@ -105,9 +127,23 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update($id,Request $request)
     {
-        //
+        $user = Auth::user();
+        $post = $user->posts->find($id);
+
+        $this->validate($request, [
+            'body' => 'required|min:20',
+            'privacy' => 'required',
+        ]);
+
+        $post->body = $request->body;
+        $post->privacy = $request->privacy;
+        $post->save();
+
+        $post->user = Auth::user();
+
+        return Post::with('user')->find($post->id);
     }
 
     /**
@@ -116,8 +152,15 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
-    {
-        //
+    public function destroy($id)
+    {   
+        try{
+            $user = Auth::user();
+            $post = $user->posts->find($id);
+            $post->delete();
+            return response([],204);
+        } catch (\Exception $e) {
+            return response(['Problem deleting'], 500);
+        }
     }
 }

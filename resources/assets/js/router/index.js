@@ -5,7 +5,12 @@ import routes from './routes'
 import Router from 'vue-router'
 import { sync } from 'vuex-router-sync'
 import VueFlashMessage from 'vue-flash-message';
+import infiniteScroll from'vue-infinite-scroll';
+import BootstrapVue from 'bootstrap-vue'
 
+Vue.use(BootstrapVue);
+
+Vue.use(infiniteScroll)
 
 Vue.use(VueFlashMessage)
 

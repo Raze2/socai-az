@@ -14,6 +14,7 @@ const Settings = () => import('~/pages/settings/index').then(m => m.default || m
 const SettingsProfile = () => import('~/pages/settings/profile').then(m => m.default || m)
 const SettingsPassword = () => import('~/pages/settings/password').then(m => m.default || m)
 const SettingsRequestsSend = () => import('~/pages/settings/requestssend').then(m => m.default || m)
+const SettingsBlockedUsers = () => import('~/pages/settings/blockedusers').then(m => m.default || m)
 
 export default [
   { path: '/', name: 'welcome', component: Welcome },
@@ -34,7 +35,8 @@ export default [
       { path: '', redirect: { name: 'settings.profile' } },
       { path: 'profile', name: 'settings.profile', component: SettingsProfile },
       { path: 'password', name: 'settings.password', component: SettingsPassword },
-      { path: 'requestssend', name: 'settings.requests.send', component: SettingsRequestsSend }
+      { path: 'requestssend', name: 'settings.requests.send', component: SettingsRequestsSend },
+      { path: 'blockedusers', name: 'settings.blocked', component: SettingsBlockedUsers }
     ] },
 
   { path: '*', name: 'notfound', component: NotFound }

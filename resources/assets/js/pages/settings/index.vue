@@ -42,6 +42,11 @@ export default {
           icon: 'user-plus',
           name: this.$t('requestssend'),
           route: 'settings.requests.send'
+        },
+        {
+          icon: 'user-lock',
+          name: this.$t('blockedusers'),
+          route: 'settings.blocked'
         }
       ]
     }

@@ -1,12 +1,12 @@
 <template>
- <card :title="$t('requestssend')">
+ <card :title="$t('blockedusers')">
   <ul class="list-group">
-    <router-link :to="{ name: 'friend.profile' ,params: { id: request.id } }" tag="li" class="list-group-item btn btn-light" v-for="request in requestssend">
-      <div class="float-left">{{ request.name }}</div>
-      <button class="btn btn-sm btn-danger float-right" @click.prevent="deleteRequest(request)"><fa icon="times" fixed-width/></button>
+    <router-link :to="{ name: 'friend.profile' ,params: { id: user.id } }" tag="li" class="list-group-item btn btn-light" v-for="user in blockedusers">
+      <div class="float-left">{{ user.name }}</div>
+      <button class="btn btn-sm btn-danger float-right" @click.prevent="deleteRequest(user)"><fa icon="times" fixed-width/></button>
     </router-link>
-    <li class="list-group-item" v-if="requestssend.length == 0">
-      No requested send
+    <li class="list-group-item" v-if="blockedusers.length == 0">
+      No users blocked
     </li>
   </ul>
  </card>
@@ -26,17 +26,17 @@ export default {
 
   data() {
     return {
-      requestssend: []
+      blockedusers: []
     } 
   },
 
   methods: {
     getRequests: function(e) {
-      axios.get('/api/friends/friendrequests').then((res) =>{
-        this.requestssend = res.data 
+      axios.get('/api/friends/blockedusers').then((res) =>{
+        this.blockedusers = res.data 
       })
     },
-    deleteRequest: function(request) {
+    deleteRequest: function(user) {
       swal({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -47,16 +47,14 @@ export default {
         confirmButtonText: 'Yes, delete it!'
       }).then((result) => {
         if (result.value) {
-          axios.delete('/api/friends/'+request.id).then((res) =>{
-            let index = this.requestssend.indexOf(request)
-            this.requestssend.splice(index, 1)
-            if(res) {
+          axios.delete('/api/friends/'+user.id).then((res) =>{
+            let index = this.blockedusers.indexOf(user)
+            this.blockedusers.splice(index, 1)
               swal(
                 'Deleted!',
-                'Your request has been deleted.',
+                'Your block has been deleted.',
                 'success'
               )
-            }
           })
         }
       })
