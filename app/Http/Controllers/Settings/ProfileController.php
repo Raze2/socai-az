@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Settings;
+namespace Social\Http\Controllers\Settings;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Social\Http\Controllers\Controller;
 
 class ProfileController extends Controller
 {

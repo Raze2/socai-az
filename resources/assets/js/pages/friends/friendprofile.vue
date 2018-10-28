@@ -24,95 +24,7 @@
   </div>
 </div>
 
-<div class="tweetEntry-tweetHolder mt-3">
- <!-- Template Entry -->
- <div class="tweetEntry" v-for="post in posts">
-  <div v-if="post.user_id == user.id" class="dropdown float-right">
-      <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" @click="initUpdate(post)">Edit</a>
-        <a class="dropdown-item" @click="deletePost(post)">Delete</a>
-      </div>
-   </div>
-   <div class="tweetEntry-content">
-     
-     <router-link :to="{ name: 'friend.profile' ,params: { id: post.user.id } }" tag="a" class="tweetEntry-account-group">
-
-       
-       <img class="tweetEntry-avatar" :src="post.user.photo_url">
-       
-       <strong class="tweetEntry-fullname">
-       {{ post.user.name }}
-       </strong>
-
-     </router-link>
-       
-       <span class="tweetEntry-username">
-         <b>{{ post.privacy }}</b>
-       </span>
-       
-       <span class="tweetEntry-timestamp">- {{ post.created_at }}</span>
-       
-     <span v-if="post.created_at != post.updated_at" class="tweetEntry-username">
-           <b>Edited</b>
-        </span>
-     
-     <div class="tweetEntry-text-container">
-       {{ post.body }}
-     </div>
-     
-   </div>
-   
-   <!-- <div class="optionalMedia" style="[displayMedia]">
-     <img class="optionalMedia-img" src="[tweetImageLinkSource]">
-   </div> -->
-
-   <div class="tweetEntry-action-list" style="line-height:24px;color: #b1bbc3;">
-      <p>{{ post.likes.length }} people likes this</p>
-   </div>
-   <div class="tweetEntry-action-list" v-if="friend.friendship.status == 'confirmed'" style="line-height:24px;color: #b1bbc3;">
-     <fa icon="thumbs-up" v-if="!post.auth_liked" fixed-width @click="addLike(post)" style="width: 80px;"/>
-     <fa icon="thumbs-up" v-else fixed-width @click="addLike(post)" style="width: 80px;color: red;"/>
-     <fa icon="reply" fixed-width style="width: 80px;"/>
-   </div>
-
-   <!--
-   <div class="tweetEntry-action-list" style="line-height:24px;color: #b1bbc3;">
-     <i class="fa fa-reply" style="width: 80px;"></i>
-     <i class="fa fa-retweet" style="width: 80px"></i>
-     <i class="fa fa-heart" style="width: 80px"></i>
-   </div> -->
-   
- </div>
-   
- <!--End of tweetHolder-->
-   </div>
-
-   <b-modal ref="myModalRef" hide-footer title="Edit Post">
-      <form class="form-control" @submit.prevent="updatePost" @keydown="updateform.onKeydown($event)">
-        <div class="form-group">
-         <textarea class="form-control" v-model="updateform.body" :class="{ 'is-invalid': updateform.errors.has('body') }" rows="3"></textarea>
-         <has-error :form="updateform" field="body"/>
-       </div>
-         <div class="form-row align-items-center">
-          <label class="mr-sm-2 col-auto" for="inlineFormCustomSelect">Privacy</label>
-         <div class="col-auto my-1">
-           <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" v-model="updateform.privacy" name="privacy">
-             <option>public</option>
-             <option>friends</option>
-             <option>private</option>
-           </select>
-         </div>
-         <div class="col-auto my-1">
-           <v-button :loading="updateform.busy">
-                    Edit
-           </v-button>
-           <button type="button" class="btn btn-default" data-dismiss="modal" block @click="$refs.myModalRef.hide()">Close</button>
-         </div>
-       </div>
-       </form>
-    </b-modal>
+<posts :postForm="false" :url="'/api/posts/' + this.$route.params.id"></posts>
 
 </div>
 
@@ -123,9 +35,14 @@ import { mapGetters } from 'vuex'
 import Form from 'vform'
 import axios from 'axios'
 import swal from 'sweetalert2'
+import posts from '~/components/posts'
 
 export default {
   middleware: 'auth',
+
+  components: {
+    posts
+  },
 
   metaInfo () {
     return { title: this.$t('settings') }
@@ -135,11 +52,6 @@ export default {
       friend: {
         friendship: []
       },
-      posts: [],
-      updateform: new Form({
-        body: '',
-        privacy: ''
-      }),
       show: true
   }),
 
@@ -152,56 +64,6 @@ export default {
       } catch (error) {
         this.$router.push({name :'notfound'});
       }
-    },
-    getPosts: function(e) {
-      axios.get('/api/posts/' + this.$route.params.id).then((res) =>{
-        this.posts = res.data,
-        console.log(res)
-      })
-    },
-    initUpdate(post)
-    {
-        this.$refs.myModalRef.show();
-        this.updateform.body = post.body;
-        this.updateform.privacy = post.privacy;
-        this.updateform.id = post.id;
-        this.updateform.index = this.posts.indexOf(post);
-    },
-    async updatePost()
-    {   
-        // Submit the form.
-        this.updateform.patch('/api/post/' + this.updateform.id).then(({ data }) => {
-          this.$set(this.posts, this.updateform.index, data);
-          this.$refs.myModalRef.hide();
-          this.flash('Post Edited', 'success',{
-            timeout: 3000,
-          });
-         });
-    },
-    deletePost: function(post) {
-      swal({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.value) {
-            axios.delete('/api/post/'+ post.id).then((res) =>{
-            let index = this.posts.indexOf(post)
-            this.posts.splice(index, 1)
-            if(res) {
-              swal(
-                'Deleted!',
-                'Your request has been deleted.',
-                'success'
-              )
-            }
-          })
-        }
-      })
     },
     sendRequest: function(e) {
       axios.post('/api/friends/'+ this.$route.params.id, []).then((res) =>{
@@ -261,7 +123,7 @@ export default {
         if (result.value) {
             axios.patch('/api/friends/'+this.$route.params.id).then((res) =>{
             this.friend.friendship = false;
-            // this.$router.push({name :'home'});
+            this.$router.push({name :'home'});
             if(res) {
               this.flash('User has been blocked', 'success',{
                 timeout: 3000,
@@ -270,19 +132,7 @@ export default {
           })
         }
       })
-    },
-    addLike: function(post) {
-      // axios.get('/api/posts/like/'+ post.id).then((res) =>{
-      //   let index = this.posts.indexOf(post);
-      //   if(res.data){
-      //     this.posts[index].likes.unshift(res.data)
-      //   } else {
-      //     let likeIndex = this.posts[index].likes.indexOf(res.data)
-      //     this.posts[index].likes.splice(likeIndex, 1) 
-      //   }
-      //   this.posts[index].auth_liked = !this.posts[index].auth_liked;
-      // })
-    } 
+    }
   },
 
   computed: mapGetters({
@@ -291,7 +141,6 @@ export default {
 
   created() {
     this.getData()
-    this.getPosts()
     this.checkUser()
   }
 }

@@ -1,17 +1,16 @@
 <template>
- <card :title="$t('friends')">
   <ul class="list-group">
-      
       <router-link :to="{ name: 'friend.profile' ,params: { id: friend.id } }" tag="li" class="list-group-item btn btn-light" v-for="friend in friends">
         <div class="float-left">{{ friend.name }}</div>
-        <button class="btn btn-sm btn-danger float-right" @click.prevent="deleteRequest(friend)"><fa icon="user-times" fixed-width/></button>
-        <button class="btn btn-sm btn-primary float-right mr-1"><fa icon="comment" fixed-width/></button>
+        <button class="btn btn-sm btn-danger float-right" v-if="buttons != 3" @click.prevent="deleteRequest(friend)"><fa icon="user-times" fixed-width/></button>
+        <button class="btn btn-sm btn-danger float-right" v-if="buttons == 3" @click.prevent="deleteRequest(friend)"><fa icon="times" fixed-width/></button>
+        <button class="btn btn-sm btn-primary float-right mr-1" v-if="buttons == 2" @click.prevent="acceptRequest(friend)"><fa icon="check" fixed-width/></button>
+        <button class="btn btn-sm btn-primary float-right mr-1" v-if="buttons == 1"><fa icon="comment" fixed-width/></button>
       </router-link>
     <li class="list-group-item" v-if="friends.length == 0">
-      No friends 
+      No results 
     </li>
   </ul>
- </card>
 </template>
 
 <script>
@@ -25,6 +24,8 @@ export default {
     return { title: this.$t('friends') }
   },
 
+  props: ['url','buttons'],
+
   data() {
     return {
       friends: []
@@ -33,7 +34,7 @@ export default {
 
   methods: {
     getRequests: function(e) {
-      axios.get('/api/friends').then((res) =>{
+      axios.get(this.url).then((res) =>{
         this.friends = res.data 
         console.log(res)
       })
@@ -55,14 +56,25 @@ export default {
             if(res) {
               swal(
                 'Deleted!',
-                'Your friend has been deleted.',
+                'Your request done.',
                 'success'
               )
             }
           })
         }
       })
-    }
+    },
+    acceptRequest: function(friend) {
+          axios.put('/api/friends/'+friend.pivot.first_user, []).then((res) =>{
+            let index = this.friends.indexOf(friend)
+            this.friends.splice(index, 1);
+            swal(
+                'Accepted!',
+                'Your friend has been added.',
+                'success'
+              )
+          })
+    },
   },
 
   created() {

@@ -1,13 +1,13 @@
 <?php
 
-namespace App;
+namespace Social;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Notifications\ResetPassword as ResetPasswordNotification;
+use Social\Notifications\ResetPassword as ResetPasswordNotification;
 use Laravel\Scout\Searchable;
-use App\Traits\Friendable;
+use Social\Traits\Friendable;
 use Auth;
 
 class User extends Authenticatable implements JWTSubject
@@ -103,7 +103,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function posts()
     {
-        return $this->hasMany('App\Post');
+        return $this->hasMany('Social\Post');
     }
 
     public function addPost($request) {
@@ -123,7 +123,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function likes()
     {
-        return $this->hasMany('App\Like');
+        return $this->hasMany('Social\Like');
     }
 
     /**
@@ -131,7 +131,21 @@ class User extends Authenticatable implements JWTSubject
      */
     public function comments()
     {
-        return $this->hasMany('App\Comment');
+        return $this->hasMany('Social\Comment');
+    }
+
+         // this is a recommended way to declare event handlers
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($user) { // before delete() method call this
+             $user->posts()->delete();
+             $user->likes()->delete();
+             $user->comments()->delete();
+             $user->allFriendsOfThisUser()->delete();
+             $user->allThisUserFriendOf()->delete();
+             // do the rest of the cleanup...
+        });
     }
 
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Social\Http\Controllers;
 
-use App\Post;
+use Social\Post;
 use Illuminate\Http\Request;
-use App\User;
-use App\Like;
+use Social\User;
+use Social\Like;
 use Auth;
 
 class PostController extends Controller
@@ -36,7 +36,7 @@ class PostController extends Controller
         // })->orWhere('user_id', $id)->with('user')->latest()->get();
 
         $userIds = $user->friends->pluck('id')->toArray();
-        $posts = Post::whereIn('user_id', $userIds)->whereIn('privacy', ['public','friends'])->orWhere('user_id', $user->id)->with('user','likes')->latest()->get(); 
+        $posts = Post::whereIn('user_id', $userIds)->whereIn('privacy', ['public','friends'])->orWhere('user_id', $user->id)->with('user','likes')->latest()->paginate(5); 
 
         // $posts = array();
         // foreach ($user->friends as $friend) {
@@ -53,16 +53,16 @@ class PostController extends Controller
 
         if($user->all_friends->find($id)){
             if($user->friends->find($id)) {
-                $posts = Post::where('user_id', $id)->whereIn('privacy', ['public','friends'])->with('user')->latest()->get();
+                $posts = Post::where('user_id', $id)->whereIn('privacy', ['public','friends'])->with('user')->latest()->paginate(5);
             } elseif ($user->all_friends->where('pivot.status', 'blocked')->find($id)) {
                 $posts = response([],500);
-            } 
-        } else {
-             if ($user->id == $id) {
-                $posts = Post::where('user_id', $id)->whereIn('privacy', ['public','friends','private'])->with('user')->latest()->get();
             } else {
-                $posts = Post::where('user_id', $id)->where('privacy', 'public')->with('user')->latest()->get();
+                $posts = Post::where('user_id', $id)->where('privacy', 'public')->with('user')->latest()->paginate(5);
             }
+        } elseif($user->id == $id) {
+                $posts = Post::where('user_id', $id)->whereIn('privacy', ['public','friends','private'])->with('user')->latest()->paginate(5);
+        } else {
+                $posts = Post::where('user_id', $id)->where('privacy', 'public')->with('user')->latest()->paginate(5);
         }
         
 
@@ -98,7 +98,7 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Post  $post
+     * @param  \Social\Post  $post
      * @return \Illuminate\Http\Response
      */
     public function addLike($id)
@@ -124,7 +124,7 @@ class PostController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Post  $post
+     * @param  \Social\Post  $post
      * @return \Illuminate\Http\Response
      */
     public function update($id,Request $request)
@@ -149,7 +149,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Post  $post
+     * @param  \Social\Post  $post
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

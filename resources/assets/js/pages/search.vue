@@ -1,5 +1,5 @@
 <template>
-<!-- <ais-index app-id="5YGLD642I0"
+<ais-index app-id="5YGLD642I0"
            api-key="930bbf37fbc553c464fd424260d366e8"
            index-name="users">
 
@@ -33,7 +33,7 @@
   </div>
 
 
-</ais-index> -->
+</ais-index> 
 
 
 

@@ -37,6 +37,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('post/{id}', 'PostController@update');
     Route::delete('post/{id}', 'PostController@destroy');
 
+    Route::get('post/{id}/comments', 'CommentController@index');
+    Route::post('post/{id}/comment', 'CommentController@store');
+    Route::patch('post/{id}/comment/{comment_id}', 'CommentController@update');
+    Route::delete('post/{id}/comment/{comment_id}', 'CommentController@destroy');
+
     Route::patch('settings/profile', 'Settings\ProfileController@update');
     Route::patch('settings/password', 'Settings\PasswordController@update');
     

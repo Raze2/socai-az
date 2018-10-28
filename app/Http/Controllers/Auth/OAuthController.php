@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace Social\Http\Controllers\Auth;
 
-use App\User;
-use App\OAuthProvider;
-use App\Http\Controllers\Controller;
-use App\Exceptions\EmailTakenException;
+use Social\User;
+use Social\OAuthProvider;
+use Social\Http\Controllers\Controller;
+use Social\Exceptions\EmailTakenException;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -63,7 +63,7 @@ class OAuthController extends Controller
     /**
      * @param  string $provider
      * @param  \Laravel\Socialite\Contracts\User $sUser
-     * @return \App\User|false
+     * @return \Social\User|false
      */
     protected function findOrCreateUser($provider, $user)
     {
@@ -90,7 +90,7 @@ class OAuthController extends Controller
     /**
      * @param  string $provider
      * @param  \Laravel\Socialite\Contracts\User $sUser
-     * @return \App\User
+     * @return \Social\User
      */
     protected function createUser($provider, $sUser)
     {

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Traits;
+namespace Social\Traits;
 
-use App\User;
-use App\Friendship;
+use Social\User;
+use Social\Friendship;
 use \Auth;
 
 trait Friendable 
@@ -20,10 +20,10 @@ trait Friendable
 
 	}
 	 // public function requestSend() {
-    //     return $this->belongsToMany('App\User', 'friends', 'user_id', 'friend_id')->withPivot('id', 'confirmed');
+    //     return $this->belongsToMany('Social\User', 'friends', 'user_id', 'friend_id')->withPivot('id', 'confirmed');
     // }
     // public function friendRequest() {
-    //     return $this->belongsToMany('App\User', 'friends', 'friend_id', 'user_id')->withPivot('id', 'confirmed');
+    //     return $this->belongsToMany('Social\User', 'friends', 'friend_id', 'user_id')->withPivot('id', 'confirmed');
     // }
     // public function friends() {
     //     $con1 = $this->requestSend()->where('confirmed', 1)->get();

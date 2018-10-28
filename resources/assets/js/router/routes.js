@@ -3,9 +3,9 @@ const Login = () => import('~/pages/auth/login').then(m => m.default || m)
 const Register = () => import('~/pages/auth/register').then(m => m.default || m)
 const PasswordEmail = () => import('~/pages/auth/password/email').then(m => m.default || m)
 const PasswordReset = () => import('~/pages/auth/password/reset').then(m => m.default || m)
-const Friends = () => import('~/pages/friends').then(m => m.default || m)
-const RequestsRecived = () => import('~/pages/requestsrecived').then(m => m.default || m)
-const FriendsProfile = () => import('~/pages/friendprofile').then(m => m.default || m)
+const Friends = () => import('~/pages/friends/friends').then(m => m.default || m)
+const RequestsRecived = () => import('~/pages/friends/requestsrecived').then(m => m.default || m)
+const FriendsProfile = () => import('~/pages/friends/friendprofile').then(m => m.default || m)
 const Search = () => import('~/pages/search').then(m => m.default || m)
 const NotFound = () => import('~/pages/errors/404').then(m => m.default || m)
 
@@ -13,8 +13,8 @@ const Home = () => import('~/pages/home').then(m => m.default || m)
 const Settings = () => import('~/pages/settings/index').then(m => m.default || m)
 const SettingsProfile = () => import('~/pages/settings/profile').then(m => m.default || m)
 const SettingsPassword = () => import('~/pages/settings/password').then(m => m.default || m)
-const SettingsRequestsSend = () => import('~/pages/settings/requestssend').then(m => m.default || m)
-const SettingsBlockedUsers = () => import('~/pages/settings/blockedusers').then(m => m.default || m)
+const SettingsRequestsSend = () => import('~/pages/settings/friends/requestssend').then(m => m.default || m)
+const SettingsBlockedUsers = () => import('~/pages/settings/friends/blockedusers').then(m => m.default || m)
 
 export default [
   { path: '/', name: 'welcome', component: Welcome },
@@ -35,8 +35,8 @@ export default [
       { path: '', redirect: { name: 'settings.profile' } },
       { path: 'profile', name: 'settings.profile', component: SettingsProfile },
       { path: 'password', name: 'settings.password', component: SettingsPassword },
-      { path: 'requestssend', name: 'settings.requests.send', component: SettingsRequestsSend },
-      { path: 'blockedusers', name: 'settings.blocked', component: SettingsBlockedUsers }
+      { path: 'friends/requestssend', name: 'settings.requests.send', component: SettingsRequestsSend },
+      { path: 'friends/blockedusers', name: 'settings.blocked', component: SettingsBlockedUsers }
     ] },
 
   { path: '*', name: 'notfound', component: NotFound }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Social\Http\Controllers;
 
-use App\Friendship;
+use Social\Friendship;
 use Illuminate\Http\Request;
-use App\User;
+use Social\User;
 use Auth;
 
 class FriendshipController extends Controller
@@ -74,7 +74,7 @@ class FriendshipController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Friend  $friend
+     * @param  \Social\Friend  $friend
      * @return \Illuminate\Http\Response
      */
     public function profile($id)
@@ -103,7 +103,7 @@ class FriendshipController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Friend  $friend
+     * @param  \Social\Friend  $friend
      * @return \Illuminate\Http\Response
      */
     public function userAccept($id)
@@ -144,7 +144,7 @@ class FriendshipController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Friend  $friend
+     * @param  \Social\Friend  $friend
      * @return \Illuminate\Http\Response
      */
 
@@ -168,7 +168,7 @@ class FriendshipController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Friend  $friend
+     * @param  \Social\Friend  $friend
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -187,7 +187,7 @@ class FriendshipController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Friend  $friend
+     * @param  \Social\Friend  $friend
      * @return \Illuminate\Http\Response
      */
     // public function profileDestroy($id)

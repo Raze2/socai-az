@@ -1,10 +1,11 @@
 <?php
 
-namespace App;
+namespace Social;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use App\Like;
+use Social\Like;
+use Social\Comment;
 Use Auth;
 
 class Post extends Model
@@ -20,7 +21,7 @@ class Post extends Model
     
     public function user()
 	{
-    	return $this->belongsTo('App\User');
+    	return $this->belongsTo('Social\User');
 	}
 
 	/**
@@ -28,7 +29,7 @@ class Post extends Model
      */
     public function likes()
     {
-        return $this->hasMany('App\Like');
+        return $this->hasMany('Social\Like');
     }
 
     /**
@@ -36,7 +37,18 @@ class Post extends Model
      */
     public function comments()
     {
-        return $this->hasMany('App\Comment');
+        return $this->hasMany('Social\Comment');
+    }
+
+     // this is a recommended way to declare event handlers
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($post) { // before delete() method call this
+             $post->likes()->delete();
+             $post->comments()->delete();
+             // do the rest of the cleanup...
+        });
     }
 
     public function getAuthLikedAttribute()
@@ -64,6 +76,13 @@ class Post extends Model
     public function addLike() {
          return Like::create([
             'post_id'   => $this->id,
+            'user_id'   => Auth::id()
+         ]);
+    }
+    public function addComment($body) {
+         return Comment::create([
+            'post_id'   => $this->id,
+            'body'   => $body,
             'user_id'   => Auth::id()
          ]);
     }

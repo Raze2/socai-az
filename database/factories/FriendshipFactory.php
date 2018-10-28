@@ -2,7 +2,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(App\Friendship::class, function (Faker $faker) {
+$factory->define(Social\Friendship::class, function (Faker $faker) {
 	$user = $faker->numberBetween(1,800);
     return [
         'first_user' => $user,
