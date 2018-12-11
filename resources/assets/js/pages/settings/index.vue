@@ -23,35 +23,35 @@
 
 <script>
 export default {
-  middleware: 'auth',
+  middleware: "auth",
 
   computed: {
-    tabs () {
+    tabs() {
       return [
         {
-          icon: 'user',
-          name: this.$t('profile'),
-          route: 'settings.profile'
+          icon: "user",
+          name: this.$t("profile"),
+          route: "settings.profile"
         },
         {
-          icon: 'lock',
-          name: this.$t('password'),
-          route: 'settings.password'
+          icon: "lock",
+          name: this.$t("password"),
+          route: "settings.password"
         },
         {
-          icon: 'user-plus',
-          name: this.$t('requestssend'),
-          route: 'settings.requests.send'
+          icon: "user-plus",
+          name: this.$t("requestssend"),
+          route: "settings.requests.send"
         },
         {
-          icon: 'user-lock',
-          name: this.$t('blockedusers'),
-          route: 'settings.blocked'
+          icon: "user-lock",
+          name: this.$t("blockedusers"),
+          route: "settings.blocked"
         }
-      ]
+      ];
     }
   }
-}
+};
 </script>
 
 <style>

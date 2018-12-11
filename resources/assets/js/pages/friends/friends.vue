@@ -1,19 +1,17 @@
 <template>
- <card :title="$t('friends')">
-  <friendslist :url="`/api/friends`" :buttons="1"></friendslist>
- </card>
-
-   
- </template>
+  <card :title="$t('friends')">
+    <friendslist :url="`/api/friends`" :buttons="1"></friendslist>
+  </card>
+</template>
 
 <script>
-import friendslist from '~/components/friendslist'
+import friendslist from "~/components/friendslist";
 
 export default {
-  middleware: 'auth',
+  middleware: "auth",
 
-  metaInfo () {
-    return { title: this.$t('friends') }
+  metaInfo() {
+    return { title: this.$t("friends") };
   },
 
   components: {
@@ -21,18 +19,12 @@ export default {
   },
 
   data() {
-    return {
-
-    } 
+    return {};
   },
 
-  methods: {
-   
-  },
+  methods: {},
 
-  created() {
-
-  }
-}
+  created() {}
+};
 </script>
 

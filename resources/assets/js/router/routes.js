@@ -29,7 +29,8 @@ export default [
   { path: '/search', name: 'search', component: Search },
 
   { path: '/home', name: 'home', component: Home },
-  { path: '/settings',
+  {
+    path: '/settings',
     component: Settings,
     children: [
       { path: '', redirect: { name: 'settings.profile' } },
@@ -37,7 +38,8 @@ export default [
       { path: 'password', name: 'settings.password', component: SettingsPassword },
       { path: 'friends/requestssend', name: 'settings.requests.send', component: SettingsRequestsSend },
       { path: 'friends/blockedusers', name: 'settings.blocked', component: SettingsBlockedUsers }
-    ] },
+    ]
+  },
 
   { path: '*', name: 'notfound', component: NotFound }
 ]

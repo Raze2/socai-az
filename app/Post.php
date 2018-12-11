@@ -15,7 +15,7 @@ class Post extends Model
     ];
 
     protected $appends = [
-        'auth_liked',
+        'auth_liked', 'likes_num', 'comments_num'
     ];
     
     
@@ -64,6 +64,15 @@ class Post extends Model
         return false;
     }
 
+    public function getLikesNumAttribute()
+    {
+        return $this->likes->count();
+    }
+
+    public function getCommentsNumAttribute()
+    {
+        return $this->comments->count();
+    }
 
     public function getCreatedAtAttribute($value) {
     	return Carbon::parse($value)->diffForHumans();

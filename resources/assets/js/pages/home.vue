@@ -1,51 +1,34 @@
 <template>
   <div>
-
-
-
- <posts :postForm="true" :url="`/api/posts`"></posts>
-
-
-
-
-
-  </div> 
-
-
-
+    <posts :postForm="true" :url="`/api/posts`"></posts>
+  </div>
 </template>
 
 <script>
-import axios from 'axios'
-import Form from 'vform'
-import { mapGetters } from 'vuex'
-import swal from 'sweetalert2'
-import posts from '~/components/posts'
+import axios from "axios";
+import Form from "vform";
+import { mapGetters } from "vuex";
+import swal from "sweetalert2";
+import posts from "~/components/posts";
 
 export default {
-  middleware: 'auth',
+  middleware: "auth",
 
   components: {
     posts
   },
 
-  metaInfo () {
-    return { title: this.$t('home') }
+  metaInfo() {
+    return { title: this.$t("home") };
   },
 
-  data: () => ({
+  data: () => ({}),
 
-  }),
-
-  methods: {
-    
-  },
+  methods: {},
 
   computed: mapGetters({
-    user: 'auth/user'
-  }),
-
-
-}
+    user: "auth/user"
+  })
+};
 </script>
 

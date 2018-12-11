@@ -1,11 +1,16 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container">
-      <router-link :to="{ name: user ? 'home' : 'welcome' }" class="navbar-brand">
-        {{ appName }}
-      </router-link>
+      <router-link :to="{ name: user ? 'home' : 'welcome' }" class="navbar-brand">{{ appName }}</router-link>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarToggler"
+        aria-controls="navbarToggler"
+        aria-expanded="false"
+      >
         <span class="navbar-toggler-icon"/>
       </button>
 
@@ -14,36 +19,45 @@
           <locale-dropdown/>
           <!-- <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
-          </li> -->
+          </li>-->
         </ul>
 
         <ul class="navbar-nav ml-auto">
           <!-- Authenticated -->
           <li v-if="user" class="nav-item">
-              <router-link :to="{ name: 'search' }" class="nav-link" active-class="active">
-                <fa icon="search" fixed-width/> {{ $t('search') }}
-              </router-link>
+            <router-link :to="{ name: 'search' }" class="nav-link" active-class="active">
+              <fa icon="search" fixed-width/>
+              {{ $t('search') }}
+            </router-link>
           </li>
           <li v-if="user" class="nav-item">
-              <router-link :to="{ name: 'friends' }" class="nav-link" active-class="active">
-                <fa icon="users" fixed-width/> {{ $t('friends') }}
-              </router-link>
+            <router-link :to="{ name: 'friends' }" class="nav-link" active-class="active">
+              <fa icon="users" fixed-width/>
+              {{ $t('friends') }}
+            </router-link>
           </li>
           <li v-if="user" class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark"
-               href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a
+              class="nav-link dropdown-toggle text-dark"
+              href="#"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
               <img :src="user.photo_url" class="rounded-circle profile-photo mr-1">
               {{ user.name }}
             </a>
 
-
             <div class="dropdown-menu">
-
-              <router-link :to="{ name: 'friend.profile', params: { id: user.id } }" class="dropdown-item pl-3">
+              <router-link
+                :to="{ name: 'friend.profile', params: { id: user.id } }"
+                class="dropdown-item pl-3"
+              >
                 <fa icon="user" fixed-width/>
                 {{ $t('profile') }}
               </router-link>
-              
+
               <div class="dropdown-divider"/>
               <router-link :to="{ name: 'requests.recived' }" class="dropdown-item pl-3">
                 <fa icon="user-plus" fixed-width/>
@@ -66,14 +80,18 @@
           <!-- Guest -->
           <template v-else>
             <li class="nav-item">
-              <router-link :to="{ name: 'login' }" class="nav-link" active-class="active">
-                {{ $t('login') }}
-              </router-link>
+              <router-link
+                :to="{ name: 'login' }"
+                class="nav-link"
+                active-class="active"
+              >{{ $t('login') }}</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="{ name: 'register' }" class="nav-link" active-class="active">
-                {{ $t('register') }}
-              </router-link>
+              <router-link
+                :to="{ name: 'register' }"
+                class="nav-link"
+                active-class="active"
+              >{{ $t('register') }}</router-link>
             </li>
           </template>
         </ul>
@@ -83,8 +101,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import LocaleDropdown from './LocaleDropdown'
+import { mapGetters } from "vuex";
+import LocaleDropdown from "./LocaleDropdown";
 
 export default {
   components: {
@@ -96,25 +114,25 @@ export default {
   }),
 
   computed: mapGetters({
-    user: 'auth/user'
+    user: "auth/user"
   }),
 
   methods: {
-    async logout () {
+    async logout() {
       // Log out the user.
-      await this.$store.dispatch('auth/logout')
+      await this.$store.dispatch("auth/logout");
 
       // Redirect to login.
-      this.$router.push({ name: 'login' })
+      this.$router.push({ name: "login" });
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .profile-photo {
   width: 2rem;
   height: 2rem;
-  margin: -.375rem 0;
+  margin: -0.375rem 0;
 }
 </style>

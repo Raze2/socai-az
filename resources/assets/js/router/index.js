@@ -39,7 +39,7 @@ export default router
  *
  * @return {Router}
  */
-function createRouter () {
+function createRouter() {
   const router = new Router({
     scrollBehavior,
     mode: 'history',
@@ -59,7 +59,7 @@ function createRouter () {
  * @param {Route} from
  * @param {Function} next
  */
-async function beforeEach (to, from, next) {
+async function beforeEach(to, from, next) {
   // Get the matched components and resolve them.
   const components = await resolveComponents(
     router.getMatchedComponents({ ...to })
@@ -95,7 +95,7 @@ async function beforeEach (to, from, next) {
  * @param {Route} from
  * @param {Function} next
  */
-async function afterEach (to, from, next) {
+async function afterEach(to, from, next) {
   await router.app.$nextTick()
 
   router.app.$loading.finish()
@@ -109,7 +109,7 @@ async function afterEach (to, from, next) {
  * @param {Route} from
  * @param {Function} next
  */
-function callMiddleware (middleware, to, from, next) {
+function callMiddleware(middleware, to, from, next) {
   const stack = middleware.reverse()
 
   const _next = (...args) => {
@@ -142,7 +142,7 @@ function callMiddleware (middleware, to, from, next) {
  * @param  {Array} components
  * @return {Array}
  */
-function resolveComponents (components) {
+function resolveComponents(components) {
   return Promise.all(components.map(component => {
     return typeof component === 'function' ? component() : component
   }))
@@ -154,7 +154,7 @@ function resolveComponents (components) {
  * @param  {Array} components
  * @return {Array}
  */
-function getMiddleware (components) {
+function getMiddleware(components) {
   const middleware = [...globalMiddleware]
 
   components.filter(c => c.middleware).forEach(component => {
@@ -178,7 +178,7 @@ function getMiddleware (components) {
  * @param  {Object|undefined} savedPosition
  * @return {Object}
  */
-function scrollBehavior (to, from, savedPosition) {
+function scrollBehavior(to, from, savedPosition) {
   if (savedPosition) {
     return savedPosition
   }
@@ -200,7 +200,7 @@ function scrollBehavior (to, from, savedPosition) {
  * @param  {Object} requireContext
  * @return {Object}
  */
-function resolveMiddleware (requireContext) {
+function resolveMiddleware(requireContext) {
   return requireContext.keys()
     .map(file =>
       [file.replace(/(^.\/)|(\.js$)/g, ''), requireContext(file)]

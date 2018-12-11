@@ -36,7 +36,7 @@ class PostController extends Controller
         // })->orWhere('user_id', $id)->with('user')->latest()->get();
 
         $userIds = $user->friends->pluck('id')->toArray();
-        $posts = Post::whereIn('user_id', $userIds)->whereIn('privacy', ['public','friends'])->orWhere('user_id', $user->id)->with('user','likes')->latest()->paginate(5); 
+        $posts = Post::whereIn('user_id', $userIds)->whereIn('privacy', ['public','friends'])->orWhere('user_id', $user->id)->with('user')->latest()->paginate(5); 
 
         // $posts = array();
         // foreach ($user->friends as $friend) {

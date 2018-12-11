@@ -16,6 +16,7 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->text('body');
+            $table->string('photo_url')->nullable();
             $table->integer('user_id')->unsigned()->index();
             $table->enum('privacy', ['public', 'friends', 'private']);
             $table->timestamps();
