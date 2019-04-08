@@ -2,10 +2,10 @@
   <ul class="list-group">
       <router-link :to="{ name: 'friend.profile' ,params: { id: friend.id } }" tag="li" class="list-group-item btn btn-light" v-for="friend in friends">
         <div class="float-left">{{ friend.name }}</div>
-        <button class="btn btn-sm btn-danger float-right" v-if="buttons != 3" @click.prevent="deleteRequest(friend)"><fa icon="user-times" fixed-width/></button>
-        <button class="btn btn-sm btn-danger float-right" v-if="buttons == 3" @click.prevent="deleteRequest(friend)"><fa icon="times" fixed-width/></button>
-        <button class="btn btn-sm btn-primary float-right mr-1" v-if="buttons == 2" @click.prevent="acceptRequest(friend)"><fa icon="check" fixed-width/></button>
-        <button class="btn btn-sm btn-primary float-right mr-1" v-if="buttons == 1"><fa icon="comment" fixed-width/></button>
+        <button class="btn btn-sm btn-danger float-right" v-if="buttons != 3 && buttons != 0" @click.prevent="deleteRequest(friend)"><fa icon="user-times" fixed-width/></button>
+        <button class="btn btn-sm btn-danger float-right" v-if="buttons == 3 && buttons != 0" @click.prevent="deleteRequest(friend)"><fa icon="times" fixed-width/></button>
+        <button class="btn btn-sm btn-primary float-right mr-1" v-if="buttons == 2 && buttons != 0" @click.prevent="acceptRequest(friend)"><fa icon="check" fixed-width/></button>
+        <button class="btn btn-sm btn-primary float-right mr-1" v-if="buttons == 1 && buttons != 0"><fa icon="comment" fixed-width/></button>
       </router-link>
     <li class="list-group-item" v-if="friends.length == 0">
       No results 
@@ -34,6 +34,7 @@ export default {
 
   methods: {
     getRequests: function(e) {
+      console.log(this.url)
       axios.get(this.url).then((res) =>{
         this.friends = res.data 
         console.log(res)
@@ -75,6 +76,15 @@ export default {
               )
           })
     },
+  },
+
+  watch: {
+    url: {
+      immediate: true,
+      handler(val,oldval){
+        this.getRequests()
+      }
+    }
   },
 
   created() {

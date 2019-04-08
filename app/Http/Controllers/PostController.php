@@ -78,6 +78,20 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+
+        $user = $request->user();
+
+        if($request->photo){
+            $name = time().'.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
+            \Image::make($request->photo)->resize(500, 400)->save(public_path('img/posts/').$name);
+            $request->merge(['photo_url' => $name]);
+            // $userPhoto = public_path('img/profile/').$currentPhoto;
+            // if(file_exists($userPhoto) && $currentPhoto != 'user.png'){
+            //     @unlink($userPhoto);
+            // }
+        }
+
+
         $this->validate($request, [
             'body' => 'required|min:20',
             'privacy' => 'required',
@@ -131,6 +145,19 @@ class PostController extends Controller
     {
         $user = Auth::user();
         $post = $user->posts->find($id);
+
+        $currentPhoto = $post->photo_url;
+
+        if($request->photo){
+            $name = time().'.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
+            \Image::make($request->photo)->resize(500, 400)->save(public_path('img/posts/').$name);
+            $request->merge(['photo_url' => $name]);
+            $post->photo_url = $request->photo_url;
+            $userPhoto = public_path('img/posts/').$currentPhoto;
+            if(file_exists($userPhoto)){
+                @unlink($userPhoto);
+            }
+        }
 
         $this->validate($request, [
             'body' => 'required|min:20',

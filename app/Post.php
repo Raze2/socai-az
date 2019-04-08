@@ -11,7 +11,7 @@ Use Auth;
 class Post extends Model
 {
     protected $fillable = [
-        'body', 'user_id', 'privacy',
+        'body', 'user_id', 'privacy', 'photo_url',
     ];
 
     protected $appends = [

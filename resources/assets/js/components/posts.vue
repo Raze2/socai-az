@@ -32,9 +32,9 @@
         <div class="col-auto">
           <div class="file-upload btn btn-primary">
             <span>BROWSE</span>
-            <input type="file" name="FileAttachment" id="FileAttachment" class="upload">
+            <input type="file" name="FileAttachment" id="FileAttachment" @change="addPhoto" class="upload">
           </div>
-          <input type="text" id="fileuploadurl" readonly placeholder="Maximum file size is 1GB">
+          <input type="text" id="fileuploadurl" readonly :placeholder="(form.photo) ? '1 photo uploaded' : 'Maximum file size is 2MB'">
         </div>
         <div class="col-auto my-1">
           <v-button :loading="form.busy">Post</v-button>
@@ -93,6 +93,13 @@
               <option>friends</option>
               <option>private</option>
             </select>
+          </div>
+          <div class="col-auto">
+            <div class="file-upload btn btn-primary">
+              <span>BROWSE</span>
+              <input type="file" name="FileAttachment" id="FileAttachment" @change="updatePhoto" class="upload">
+            </div>
+            <input type="text" id="fileuploadurl" readonly :placeholder="(updateform.photo) ? '1 photo uploaded' : 'Maximum file size is 2MB'">
           </div>
           <div class="col-auto my-1">
             <v-button :loading="updateform.busy">Edit</v-button>
@@ -157,11 +164,13 @@ export default {
   data: () => ({
     form: new Form({
       body: "",
-      privacy: "public"
+      privacy: "public",
+      photo:""
     }),
     updateform: new Form({
       body: "",
-      privacy: ""
+      privacy: "",
+      photo:""
     }),
     posts: {},
     updateCommentform: new Form({
@@ -238,6 +247,7 @@ export default {
       this.$refs.myModalRef.show();
       this.updateform.body = post.body;
       this.updateform.privacy = post.privacy;
+      this.updateform.photo = post.photo_url;
       this.updateform.id = post.id;
       this.updateform.index = index;
     },
@@ -252,6 +262,40 @@ export default {
             timeout: 3000
           });
         });
+    },
+    addPhoto(e){
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        let limit = 1024 * 1024 * 2;
+        if(file['size'] > limit){
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'You are uploading a large file',
+            })
+            return false;
+        }
+        reader.onloadend = (file) => {
+            this.form.photo = reader.result;
+        }
+        reader.readAsDataURL(file);
+    },
+    updatePhoto(e){
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        let limit = 1024 * 1024 * 2;
+        if(file['size'] > limit){
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'You are uploading a large file',
+            })
+            return false;
+        }
+        reader.onloadend = (file) => {
+            this.updateform.photo = reader.result;
+        }
+        reader.readAsDataURL(file);
     },
     deletePost: function(post, index) {
       swal({

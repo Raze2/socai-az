@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="card card-profile text-center">
-      <img class="card-img-top" src="https://unsplash.it/340/160?image=354">
+      <img class="card-img-top" :src="'../img/cover/'+friend.cover">
       <div class="card-block">
         <img class="card-img-profile" :src="friend.photo_url">
         <div
@@ -92,9 +92,11 @@ export default {
     },
     sendRequest: function(e) {
       axios.post("/api/friends/" + this.$route.params.id, []).then(res => {
+        console.log(res);
         this.friend.friendship = {
           status: "pending",
-          first_user: this.user.id
+          first_user: this.user.id,
+          id: res.data.id
         };
       });
     },
@@ -108,10 +110,13 @@ export default {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!"
       }).then(result => {
+                      console.log(this.friend.friendship.id)
+
         if (result.value) {
           axios
             .delete("/api/friends/" + this.friend.friendship.id)
             .then(res => {
+              console.log(res)
               this.friend.friendship = false;
               if (res) {
                 swal("Deleted!", "Your request has been deleted.", "success");

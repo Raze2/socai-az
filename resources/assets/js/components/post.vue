@@ -41,6 +41,9 @@
     <!-- <div class="optionalMedia" style="[displayMedia]">
        <img class="optionalMedia-img" src="[tweetImageLinkSource]">
     </div>-->
+    <div class="optionalMedia" v-if="post.photo_url">
+      <img class="optionalMedia-img" :src="'../img/posts/' + post.photo_url">
+    </div>
     <div class="tweetEntry-action-list" style="line-height:24px;color: #b1bbc3;">
       <a class="ml-2">{{ post.likes_num }} likes</a>
       <a class="ml-2">{{ post.comments_num }} Comments</a>

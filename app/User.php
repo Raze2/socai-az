@@ -22,7 +22,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','avatar','cover',
     ];
 
     /**
@@ -50,7 +50,8 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getPhotoUrlAttribute()
     {
-        return 'https://www.gravatar.com/avatar/'.md5(strtolower($this->email)).'.jpg?s=200&d=mm';
+        // return 'https://www.gravatar.com/avatar/'.md5(strtolower($this->email)).'.jpg?s=200&d=mm';
+        return '../img/profile/'. $this->avatar;
     }
 
 
@@ -112,6 +113,7 @@ class User extends Authenticatable implements JWTSubject
             'body' => $request->body,
             'privacy' => $request->privacy,
             'user_id' => $this->id,
+            'photo_url' => $request->photo_url,
         ]);
 
         return $post;

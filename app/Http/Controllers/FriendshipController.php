@@ -52,6 +52,25 @@ class FriendshipController extends Controller
         $user = Auth::user();
         return $user->all_friends->where('pivot.status', 'blocked')->where('pivot.acted_user', $user->id)->toJson();
     }
+
+    /**
+     * Search a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function search($search = null)
+    {
+        if ($search && $search != '') {
+            $users = User::where(function($query) use ($search){
+                $query->where('name','LIKE',"%$search%");
+                        // ->orWhere('email','LIKE',"%$search%");
+            })->take(5)->get()->toJson();
+        }else{
+            $users = Null;
+        }
+        return $users;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -66,9 +85,9 @@ class FriendshipController extends Controller
             return response([], 500);
         }
 
-        $user->addFriend($id, 'pending');
+        $friendship = $user->addFriend($id, 'pending');
 
-        return response([], 204);    
+        return $friendship;    
     }
 
     /**
@@ -80,16 +99,16 @@ class FriendshipController extends Controller
     public function profile($id)
     {
         $user = Auth::user();
-        $friend = User::find($id);
+        $friend = User::findOrFail($id);
 
         if($user->all_friends->whereIn('pivot.status', ['pending', 'confirmed'])->find($id)){
             $isFriend = $user->all_friends->find($id)->pivot;
-            return ['name' => $friend->name,'photo_url' => $friend->photo_url, 'friendship' => $isFriend];
+            return ['name' => $friend->name,'photo_url' => $friend->photo_url, 'friendship' => $isFriend, 'cover' => $friend->cover, 'photo' => $friend->avatar];
         } elseif ($user->all_friends->find($id)) {
              return response([], 403);
         } else {
             $isFriend = False;
-            return ['name' => $friend->name,'photo_url' => $friend->photo_url, 'friendship' => $isFriend];
+            return ['name' => $friend->name,'photo_url' => $friend->photo_url, 'friendship' => $isFriend, 'cover' => $friend->cover, 'photo' => $friend->avatar];
         }
 
         // $isFriend = ($user->requestSend->where('confirmed', 1)->find($id) OR $user->friendRequest->where('confirmed', 1)->find($id) ? 'friend' : ($user->requestSend->where('confirmed', 0)->find($id) ? 'sended' : ($user->friendRequest->where('confirmed', 0)->find($id) ? 'recived' : False)));
@@ -173,15 +192,13 @@ class FriendshipController extends Controller
      */
     public function destroy($id)
     {
-        try{
-            $user = Auth::user();
-            $friend = Friendship::where('first_user', $user->id)->orWhere('second_user', $user->id)->findOrFail($id);
+        $user = Auth::user();
+        $friend = Friendship::find($id);
+        if($friend && ($friend->first_user == $user->id || $friend->second_user == $user->id) ){
             $friend->delete();
             return response([],204);
-        } catch (\Exception $e) {
-            return response(['Problem deleting'], 500);
-        }
-        
+        } 
+        return response([], 500);
     }
 
     /**

@@ -33,6 +33,28 @@
         </div>
       </div>
 
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label text-md-right">{{ $t('profile-picture') }}</label>
+        <div class="col-md-9 ml-md-auto mt-2">
+          <div class="file-upload btn  btn-primary">
+            <span>BROWSE</span>
+            <input type="file" name="FileAttachment" id="FileAttachment" @change="updateProfile" class="upload">
+          </div>
+          <input type="text" id="fileuploadurl" readonly placeholder="Maximum file size is 1GB">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label text-md-right">{{ $t('cover') }}</label>
+        <div class="col-md-9 ml-md-auto mt-2">
+          <div class="file-upload btn  btn-primary">
+            <span>BROWSE</span>
+            <input type="file" name="FileAttachment" @change="updateCover" id="FileAttachment" class="upload">
+          </div>
+          <input type="text" id="fileuploadurl" readonly :placeholder="(user.avatar && user.avatar != 'user.png') ? '1 photo uploaded' : 'Maximum file size is 2MB'">
+        </div>
+      </div>
+
       <!-- Submit Button -->
       <div class="form-group row">
         <div class="col-md-9 ml-md-auto">
@@ -57,7 +79,9 @@ export default {
   data: () => ({
     form: new Form({
       name: "",
-      email: ""
+      email: "",
+      photo: "",
+      cover:""
     })
   }),
 
@@ -77,6 +101,40 @@ export default {
       const { data } = await this.form.patch("/api/settings/profile");
 
       this.$store.dispatch("auth/updateUser", { user: data });
+    },
+    updateProfile(e){
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        let limit = 1024 * 1024 * 2;
+        if(file['size'] > limit){
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'You are uploading a large file',
+            })
+            return false;
+        }
+        reader.onloadend = (file) => {
+            this.form.photo = reader.result;
+        }
+        reader.readAsDataURL(file);
+    },
+    updateCover(e){
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        let limit = 1024 * 1024 * 2;
+        if(file['size'] > limit){
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: 'You are uploading a large file',
+            })
+            return false;
+        }
+        reader.onloadend = (file) => {
+            this.form.cover = reader.result;
+        }
+        reader.readAsDataURL(file);
     }
   }
 };

@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('friends/requestsrecived', 'FriendshipController@requestsRecived');
     Route::get('friends/blockedusers', 'FriendshipController@blockedUsers');
     Route::get('friends/{id}', 'FriendshipController@profile');
+    Route::get('friends/search/{search?}', 'FriendshipController@search');
     Route::post('friends/{id}', 'FriendshipController@sentRequest');
     Route::put('friends/{id}', 'FriendshipController@userAccept');
     Route::patch('friends/{id}', 'FriendshipController@userBlock');

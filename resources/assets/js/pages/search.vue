@@ -1,52 +1,46 @@
 <template>
-  <ais-index app-id="5YGLD642I0" api-key="930bbf37fbc553c464fd424260d366e8" index-name="users">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-10 col-lg-8">
-        <form class="card card-sm">
-          <div class="card-body row no-gutters align-items-center">
-            <div class="col-auto">
-              <i class="fas fa-search h4 text-body"></i>
-            </div>
-            <!--end of col-->
-            <div class="col">
-              <ais-input
-                class="form-control form-control-lg form-control-borderless"
-                placeholder="Search users..."
-              ></ais-input>
-            </div>
-            <!--end of col-->
-            <div class="col-auto">
-              <fa icon="search" fixed-width/>
-            </div>
-            <!--end of col-->
-          </div>
-        </form>
-        <ais-results inline-template>
-          <ul class="list-group mt-1">
-            <router-link
-              :key="result.objectID"
-              :to="{ name: 'friend.profile' ,params: { id: result.id } }"
-              tag="li"
-              class="list-group-item btn btn-light"
-              v-for="result in results"
-            >
-              <div class="float-left">{{ result.name }}</div>
-            </router-link>
-          </ul>
-        </ais-results>
+  <div class="col-md-6">
+    	<!-- SEARCH FORM -->
+    <div class="input-group input-group-md">
+       <input class="form-control form-control-navbar" @keyup="searchit" v-model="search" type="search" placeholder="Search" aria-label="Search">
+       <div class="input-group-append">
+        <button class="btn btn-primary" @click="searchit">
+          <i class="fa fa-search"></i>
+          <fa icon="search" fixed-width/>
+        </button>
       </div>
-      <!--end of col-->
-    </div>
-  </ais-index>
+  	</div>
+  	<card :title="$t('friends')">
+  	    <friendslist :url="url" :buttons="0"></friendslist>
+    </card>
+  </div>
 </template>
 
 <script>
+import friendslist from "~/components/friendslist";
+
 export default {
   middleware: "auth",
 
   metaInfo() {
     return { title: this.$t("Search") };
-  }
+  },
+
+  data: () => ({
+  	search: '',
+    url: '/api/friends/search/'
+  }),
+
+  methods: {
+    searchit: function(){
+      this.url = '/api/friends/search/' + this.search;
+    }
+  },
+  components: {
+    friendslist
+  },
+
+
 };
 </script>
 

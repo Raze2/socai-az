@@ -18,6 +18,8 @@ trait Friendable
 			'status' => $status,
 		]);
 
+        return $friendship;
+
 	}
 	 // public function requestSend() {
     //     return $this->belongsToMany('Social\User', 'friends', 'user_id', 'friend_id')->withPivot('id', 'confirmed');
@@ -64,9 +66,9 @@ trait Friendable
     protected function mergeAllFriends()
     {
         if($temp = $this->allFriendsOfThisUser)
-        return $temp->merge($this->allThisUserFriendOf);
+            return $temp->merge($this->allThisUserFriendOf);
         else
-        return $this->allThisUserFriendOf;
+            return $this->allThisUserFriendOf;
     }
 
 
