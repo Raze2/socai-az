@@ -5,7 +5,9 @@ namespace Social\Http\Controllers;
 use Social\Comment;
 use Auth;
 use Social\Post;
+use Social\User;
 use Illuminate\Http\Request;
+use Social\Notifications\CommentAdded;
 
 class CommentController extends Controller
 {
@@ -56,6 +58,8 @@ class CommentController extends Controller
             $comment = $post->addComment($request->body);
 
         $comment->user = $user;
+
+        // User::find($post->user_id)->notify(new CommentAdded($user->name, $user->avatar,$post->id));
 
         return $comment;
     }

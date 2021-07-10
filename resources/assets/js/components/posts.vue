@@ -42,7 +42,7 @@
       </div>
     </form>
 
-    <div class="tweetEntry-tweetHolder mt-3">
+    <div class="tweetEntry-tweetHolder mt-3" v-if="!postView">
       <post
         v-for="(post,index) in posts"
         :post="post"
@@ -56,6 +56,22 @@
       <infinite-loading @infinite="infiniteHandler">
         <span slot="no-more">There's no more posts</span>
       </infinite-loading>
+
+      <!--  <a class="btn btn-primary" @click="seeMore()">See more</a>
+      -->
+      <!--End of tweetHolder-->
+    </div>
+
+    <div class="tweetEntry-tweetHolder mt-3" v-if="postView">
+      <post
+        :showComments=true
+        :post="posts"
+        :updateCommentform="updateCommentform"
+        v-bind:key="posts.id"
+        @delete-post="deletePost(...arguments)"
+        @init-post="initUpdatePost(...arguments)"
+        @init-comment="initUpdateComment(...arguments)"
+      ></post>
 
       <!--  <a class="btn btn-primary" @click="seeMore()">See more</a>
       -->
@@ -155,7 +171,7 @@ import swal from "sweetalert2";
 import post from "./post";
 
 export default {
-  props: ["postForm", "url"],
+  props: ["postForm", "url", "postView"],
 
   components: {
     post
@@ -188,28 +204,35 @@ export default {
     getPosts: function() {
       this.limit = 2;
       axios.get(this.url).then(response => {
-        this.posts = response.data.data;
+        if(!this.postView)
+          this.posts = response.data.data;
+        else {
+          this.posts.user = this.user;
+          this.posts = response.data;
+          this.posts.user = this.user;
+        }
       });
     },
     infiniteHandler($state) {
-      axios
-        .get(this.url, {
-          params: {
-            page: this.limit
-          }
-        })
-        .then(response => {
-          if (response.data.data.length) {
-            this.posts = this.posts.concat(response.data.data);
-            this.limit++;
-            $state.loaded();
-            if (this.posts.length === response.data.total) {
+      if(!this.postView)
+        axios
+          .get(this.url, {
+            params: {
+              page: this.limit
+            }
+          })
+          .then(response => {
+            if (response.data.data.length) {
+              this.posts = this.posts.concat(response.data.data);
+              this.limit++;
+              $state.loaded();
+              if (this.posts.length === response.data.total) {
+                $state.complete();
+              }
+            } else {
               $state.complete();
             }
-          } else {
-            $state.complete();
-          }
-        });
+          });
     },
     // infiniteHandler: function ($state) {
     //   console.log(this.posts.length)

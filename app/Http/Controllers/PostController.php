@@ -47,9 +47,18 @@ class PostController extends Controller
         return $posts;
     }
 
+    public function view($id)
+    {
+        $user = Auth::user();        
+
+        $post = $user->posts->find($id);
+        
+        return $post;
+    }
+
     public function profilePosts($id)
     {
-        $user = User::find(1);        
+        $user = Auth::user();        
 
         if($user->all_friends->find($id)){
             if($user->friends->find($id)) {
@@ -148,7 +157,7 @@ class PostController extends Controller
 
         $currentPhoto = $post->photo_url;
 
-        if($request->photo){
+        if($request->photo != $currentPhoto){
             $name = time().'.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
             \Image::make($request->photo)->resize(500, 400)->save(public_path('img/posts/').$name);
             $request->merge(['photo_url' => $name]);

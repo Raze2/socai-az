@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,7 +16,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', 'Auth\LoginController@logout');
 
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return $request->user()->load('notifications');
     });
 
     Route::get('friends', 'FriendshipController@friends');
@@ -32,6 +31,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('friends/{id}', 'FriendshipController@destroy');
 
     Route::get('posts', 'PostController@index');
+    Route::get('post/{id}', 'PostController@view');
     Route::get('posts/{id}', 'PostController@profilePosts');
     Route::get('posts/like/{id}', 'PostController@addLike');
     Route::post('post', 'PostController@store');
@@ -42,6 +42,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('post/{id}/comment', 'CommentController@store');
     Route::patch('post/{id}/comment/{comment_id}', 'CommentController@update');
     Route::delete('post/{id}/comment/{comment_id}', 'CommentController@destroy');
+
+    Route::get("notification/mark-all-read", "settings\profileController@readAllNotifications");
 
     Route::patch('settings/profile', 'Settings\ProfileController@update');
     Route::patch('settings/password', 'Settings\PasswordController@update');

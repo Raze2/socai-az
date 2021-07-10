@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card card-profile text-center">
+    <div class="card card-profile text-center" >
       <img class="card-img-top" :src="'../img/cover/'+friend.cover">
       <div class="card-block">
         <img class="card-img-profile" :src="friend.photo_url">

@@ -40,7 +40,7 @@
             <span>BROWSE</span>
             <input type="file" name="FileAttachment" id="FileAttachment" @change="updateProfile" class="upload">
           </div>
-          <input type="text" id="fileuploadurl" readonly placeholder="Maximum file size is 1GB">
+          <input type="text" id="fileuploadurl" readonly :placeholder="(user.avatar != form.photo) ? 'Uploaded' : 'Maximum file size is 2MB'">
         </div>
       </div>
 
@@ -51,7 +51,7 @@
             <span>BROWSE</span>
             <input type="file" name="FileAttachment" @change="updateCover" id="FileAttachment" class="upload">
           </div>
-          <input type="text" id="fileuploadurl" readonly :placeholder="(user.avatar && user.avatar != 'user.png') ? '1 photo uploaded' : 'Maximum file size is 2MB'">
+          <input type="text" id="fileuploadurl" readonly :placeholder="(user.cover != form.cover) ? 'Uploaded' : 'Maximum file size is 2MB'">
         </div>
       </div>
 
@@ -68,6 +68,7 @@
 <script>
 import Form from "vform";
 import { mapGetters } from "vuex";
+import swal from "sweetalert2";
 
 export default {
   scrollToTop: false,
@@ -94,6 +95,7 @@ export default {
     this.form.keys().forEach(key => {
       this.form[key] = this.user[key];
     });
+    this.form.photo = this.user.avatar;
   },
 
   methods: {

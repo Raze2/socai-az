@@ -155,7 +155,7 @@ import { mapGetters } from "vuex";
 import swal from "sweetalert2";
 
 export default {
-  props: ["post", "index", "updateCommentform"],
+  props: ["post", "index", "updateCommentform", "showComments"],
 
   data: () => ({
     comments: false,
@@ -168,6 +168,12 @@ export default {
   computed: mapGetters({
     user: "auth/user"
   }),
+
+  mounted() {
+      if(this.showComments && this.post.id){
+        this.getComments(this.post,this.index);
+      }
+  },
 
   methods: {
     addLike: function(post, index) {

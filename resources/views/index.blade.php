@@ -4,6 +4,7 @@ $config = [
     'locale' => $locale = app()->getLocale(),
     'locales' => config('app.locales'),
     'githubAuth' => config('services.github.client_id'),
+    'env' => ['MIX_PUSHER_APP_KEY'=>env('MIX_PUSHER_APP_KEY'),'MIX_PUSHER_APP_CLUSTER'=>env('MIX_PUSHER_APP_CLUSTER')]
 ];
 
 $polyfills = [
@@ -23,6 +24,7 @@ $polyfills = [
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>{{ config('app.name') }}</title>
 

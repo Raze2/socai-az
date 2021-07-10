@@ -10,6 +10,7 @@ const Search = () => import('~/pages/search').then(m => m.default || m)
 const NotFound = () => import('~/pages/errors/404').then(m => m.default || m)
 
 const Home = () => import('~/pages/home').then(m => m.default || m)
+const Post = () => import('~/pages/post/post').then(m => m.default || m)
 const Settings = () => import('~/pages/settings/index').then(m => m.default || m)
 const SettingsProfile = () => import('~/pages/settings/profile').then(m => m.default || m)
 const SettingsPassword = () => import('~/pages/settings/password').then(m => m.default || m)
@@ -27,6 +28,7 @@ export default [
   { path: '/friends/requestsrecived', name: 'requests.recived', component: RequestsRecived },
   { path: '/profile/:id', name: 'friend.profile', component: FriendsProfile },
   { path: '/search', name: 'search', component: Search },
+  { path: '/post/:id', name: 'post', component: Post },
 
   { path: '/home', name: 'home', component: Home },
   {

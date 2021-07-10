@@ -163,7 +163,7 @@ return [
          */
         Social\Providers\AppServiceProvider::class,
         Social\Providers\AuthServiceProvider::class,
-        // Social\Providers\BroadcastServiceProvider::class,
+        Social\Providers\BroadcastServiceProvider::class,
         Social\Providers\EventServiceProvider::class,
         Social\Providers\RouteServiceProvider::class,
 

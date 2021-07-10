@@ -49,4 +49,8 @@ class ProfileController extends Controller
 
         return tap($user)->update($request->only('name', 'email', 'avatar', 'cover'));
     }
+
+    public function readAllNotifications(){
+        Auth::user()->unreadNotifications->markAsRead();
+    }
 }

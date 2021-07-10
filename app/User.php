@@ -3,12 +3,14 @@
 namespace Social;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Social\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Support\Facades\Notification;
+use Social\Notifications\CommentAdded;
 use Laravel\Scout\Searchable;
 use Social\Traits\Friendable;
 use Auth;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements JWTSubject
 {
